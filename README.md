@@ -6,6 +6,8 @@
 - For SPI e-paper displays from Dalian Good Display 
 - and SPI e-paper boards from Waveshare
 
+- fork to support Good Display's Panel GDEH0154D67, a slow downgrade panel need 4s for full screen refresh
+
 ### important note :
 - the display panels are for 3.3V supply and 3.3V data lines
 - never connect data lines directly to 5V Arduino data pins, use e.g. 4k7/10k resistor divider
