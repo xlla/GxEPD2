@@ -91,11 +91,11 @@ void GxEPD2_154_D67::_writeScreenBuffer(uint8_t value)
   {
     _writeData(value);
   }
-  _writeCommand(0x26);
-  for (uint32_t i = 0; i < uint32_t(WIDTH) * uint32_t(HEIGHT) / 8; i++)
-  {
-    _writeData(value);
-  }
+//   _writeCommand(0x26);
+//   for (uint32_t i = 0; i < uint32_t(WIDTH) * uint32_t(HEIGHT) / 8; i++)
+//   {
+//     _writeData(value);
+//   }
 }
 
 void GxEPD2_154_D67::writeImage(const uint8_t bitmap[], int16_t x, int16_t y, int16_t w, int16_t h, bool invert, bool mirror_y, bool pgm)
@@ -168,6 +168,7 @@ void GxEPD2_154_D67::writeImagePart(const uint8_t bitmap[], int16_t x_part, int1
   if ((w1 <= 0) || (h1 <= 0)) return;
   if (!_using_partial_mode) _Init_Part();
   _setPartialRamArea(x1, y1, w1, h1);
+  _waitWhileBusy("writeImagePart");
   _writeCommand(0x24);
   for (int16_t i = 0; i < h1; i++)
   {
@@ -389,7 +390,7 @@ void GxEPD2_154_D67::_PowerOn()
 void GxEPD2_154_D67::_PowerOff()
 {
   _writeCommand(0x22);
-  _writeData(0x03);
+  _writeData(0xc3);
   _writeCommand(0x20);
   _waitWhileBusy("_PowerOff", power_off_time);
   _power_is_on = false;
