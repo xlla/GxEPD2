@@ -24,7 +24,7 @@ class GxEPD2_154_D67 : public GxEPD2_EPD
       Flip_Y = 0x02, 
       Flip_X = 0x01, 
     Flip_C = 0x00
-  }
+  };
     // attributes
     static const uint16_t WIDTH = 200;
     static const uint16_t HEIGHT = 200;
@@ -72,6 +72,15 @@ class GxEPD2_154_D67 : public GxEPD2_EPD
     void hibernate(); // turns powerOff() and sets controller to deep sleep for minimum power use, ONLY if wakeable by RST (rst >= 0)
   private:
     ScreenRotate _sr = None;
+        static const uint8_t LUTDefault_full[];
+    static const uint8_t LUTDefault_part[];
+    static const uint8_t GDOControl[];
+    static const uint8_t softstart[];
+    static const uint8_t VCOMVol[];
+    static const uint8_t DummyLine[];
+    static const uint8_t Gatetime[];
+    static const uint8_t DisplayOption[];
+
     void _writeScreenBuffer(uint8_t command, uint8_t value);
     void _writeImage(uint8_t command, const uint8_t bitmap[], int16_t x, int16_t y, int16_t w, int16_t h, bool invert = false, bool mirror_y = false, bool pgm = false);
     void _writeImagePart(uint8_t command, const uint8_t bitmap[], int16_t x_part, int16_t y_part, int16_t w_bitmap, int16_t h_bitmap,
