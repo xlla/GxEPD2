@@ -42,7 +42,7 @@ class GxEPD2_3C : public Adafruit_GFX
   public:
     GxEPD2_Type epd2;
 #if ENABLE_GxEPD2_GFX
-    GxEPD2_3C(GxEPD2_Type epd2_instance) : epd2(epd2_instance), GxEPD2_GFX(epd2, GxEPD2_Type::WIDTH, GxEPD2_Type::HEIGHT)
+    GxEPD2_3C(GxEPD2_Type epd2_instance) : GxEPD2_GFX(epd2, GxEPD2_Type::WIDTH, GxEPD2_Type::HEIGHT), epd2(epd2_instance)
 #else
     GxEPD2_3C(GxEPD2_Type epd2_instance) : Adafruit_GFX(GxEPD2_Type::WIDTH, GxEPD2_Type::HEIGHT), epd2(epd2_instance)
 #endif
@@ -419,6 +419,7 @@ class GxEPD2_3C : public Adafruit_GFX
     void refresh(bool partial_update_mode = false) // screen refresh from controller memory to full screen
     {
       epd2.refresh(partial_update_mode);
+      if (!partial_update_mode) epd2.powerOff();
     }
     void refresh(int16_t x, int16_t y, int16_t w, int16_t h) // screen refresh from controller memory, partial screen
     {

@@ -1,9 +1,9 @@
 // Display Library for SPI e-paper panels from Dalian Good Display and boards from Waveshare.
 // Requires HW SPI and Adafruit_GFX. Caution: the e-paper panels require 3.3V supply AND data lines!
 //
-// based on Demo Example from Good Display, available here: http://www.e-paper-display.com/download_detail/downloadsId=806.html
-// Panel: GDEH0154D67 : http://www.e-paper-display.com/products_detail/productId=455.html
-// Controller : SSD1681 : http://www.e-paper-display.com/download_detail/downloadsId=825.html
+// based on Demo Example from Good Display:
+// Panel: GDEW1248T3 : http://www.e-paper-display.com/products_detail/productId=414.html
+// Controller: IL0326 : http://www.e-paper-display.com/download_detail/downloadsId=768.html
 //
 // Author: Jean-Marc Zingg
 //
@@ -11,35 +11,42 @@
 //
 // Library: https://github.com/ZinggJM/GxEPD2
 
-#ifndef _GxEPD2_154_D67_H_
-#define _GxEPD2_154_D67_H_
+#ifndef _GxEPD2_1248_H_
+#define _GxEPD2_1248_H_
 
 #include "../GxEPD2_EPD.h"
 
-class GxEPD2_154_D67 : public GxEPD2_EPD
+class GxEPD2_1248 : public GxEPD2_EPD
 {
   public:
-  enum ScreenRotate {
-      None = 0x03,
-      Flip_Y = 0x02, 
-      Flip_X = 0x01, 
-    Flip_C = 0x00
-  }
     // attributes
-    static const uint16_t WIDTH = 200;
-    static const uint16_t HEIGHT = 200;
-    static const GxEPD2::Panel panel = GxEPD2::GDEH0154D67;
+    static const uint16_t WIDTH = 1304;
+    static const uint16_t HEIGHT = 984;
+    static const GxEPD2::Panel panel = GxEPD2::GDEW1248T3;
     static const bool hasColor = false;
     static const bool hasPartialUpdate = true;
-    static const bool hasFastPartialUpdate = true;
-    static const uint16_t power_on_time = 100; // ms, e.g. 95583us
-    static const uint16_t power_off_time = 150; // ms, e.g. 140621us
-    static const uint16_t full_refresh_time = 2600; // ms, e.g. 2509602us
-    static const uint16_t partial_refresh_time = 500; // ms, e.g. 457282us
-    // constructor
-    GxEPD2_154_D67(int8_t cs, int8_t dc, int8_t rst, int8_t busy);
-    void setScreenRotate(ScreenRotate em);
+    static const bool hasFastPartialUpdate = true; // set this false to force full refresh always
+    static const uint16_t power_on_time = 200; // ms, e.g. 131001us
+    static const uint16_t power_off_time = 50; // ms, e.g. 41001us
+    static const uint16_t full_refresh_time = 4600; // ms, e.g. 4579001us
+    static const uint16_t partial_refresh_time = 1600; // ms, e.g. 1525001us
+    // constructors
+#if defined(ESP32)
+    // general constructor for use with all parameters on ESP32, e.g. for Waveshare ESP32 driver board mounted on connection board
+    GxEPD2_1248(int8_t sck, int8_t miso, int8_t mosi,
+                int8_t cs_m1, int8_t cs_s1, int8_t cs_m2, int8_t cs_s2,
+                int8_t dc1, int8_t dc2, int8_t rst1, int8_t rst2,
+                int8_t busy_m1, int8_t busy_s1, int8_t busy_m2, int8_t busy_s2);
+#endif
+    // general constructor for use with standard SPI pins, default SCK, MISO and MOSI
+    GxEPD2_1248(int8_t cs_m1, int8_t cs_s1, int8_t cs_m2, int8_t cs_s2,
+                int8_t dc1, int8_t dc2, int8_t rst1, int8_t rst2,
+                int8_t busy_m1, int8_t busy_s1, int8_t busy_m2, int8_t busy_s2);
+    // constructor with minimal parameter set, standard SPI, dc1 and dc2, rst1 and rst2 to one pin, one busy used (can be -1)
+    GxEPD2_1248(int8_t cs_m1, int8_t cs_s1, int8_t cs_m2, int8_t cs_s2, int8_t dc, int8_t rst, int8_t busy);
     // methods (virtual)
+    void init(uint32_t serial_diag_bitrate = 0); // serial_diag_bitrate = 0 : disabled
+    void init(uint32_t serial_diag_bitrate, bool initial, bool pulldown_rst_mode = false);
     //  Support for Bitmaps (Sprites) to Controller Buffer and to Screen
     void clearScreen(uint8_t value = 0xFF); // init controller memory and screen (default white)
     void writeScreenBuffer(uint8_t value = 0xFF); // init controller memory (default white)
@@ -71,16 +78,9 @@ class GxEPD2_154_D67 : public GxEPD2_EPD
     void powerOff(); // turns off generation of panel driving voltages, avoids screen fading over time
     void hibernate(); // turns powerOff() and sets controller to deep sleep for minimum power use, ONLY if wakeable by RST (rst >= 0)
   private:
-    ScreenRotate _sr = None;
-    void _writeScreenBuffer(uint8_t command, uint8_t value);
-    void _writeImage(uint8_t command, const uint8_t bitmap[], int16_t x, int16_t y, int16_t w, int16_t h, bool invert = false, bool mirror_y = false, bool pgm = false);
-    void _writeImagePart(uint8_t command, const uint8_t bitmap[], int16_t x_part, int16_t y_part, int16_t w_bitmap, int16_t h_bitmap,
-                         int16_t x, int16_t y, int16_t w, int16_t h, bool invert = false, bool mirror_y = false, bool pgm = false);
+    void _reset();
+    void _initSPI();
     void _setPartialRamArea(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
-    void _setRamDataEntryMode(uint8_t em, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
-    void _SetRamArea(uint8_t Xstart, uint8_t Xend, uint8_t Ystart, uint8_t Ystart1, uint8_t Yend, uint8_t Yend1);
-    void _SetRamPointer(uint8_t addrX, uint8_t addrY, uint8_t addrY1);
-
     void _PowerOn();
     void _PowerOff();
     void _InitDisplay();
@@ -88,6 +88,44 @@ class GxEPD2_154_D67 : public GxEPD2_EPD
     void _Init_Part();
     void _Update_Full();
     void _Update_Part();
+    void _writeCommandMaster(uint8_t c);
+    void _writeDataMaster(uint8_t d);
+    void _writeCommandAll(uint8_t c);
+    void _writeDataAll(uint8_t d);
+    void _writeDataPGM_All(const uint8_t* data, uint16_t n, int16_t fill_with_zeroes = 0);
+    void _waitWhileAnyBusy(const char* comment = 0, uint16_t busy_time = 5000);
+    void _getMasterTemperature();
+  private:
+    int8_t _sck, _miso, _mosi, _dc1, _dc2, _rst1, _rst2;
+    int8_t _cs_m1, _cs_s1, _cs_m2, _cs_s2;
+    int8_t _busy_m1, _busy_s1, _busy_m2, _busy_s2;
+    int8_t _temperature;
+    static const unsigned char lut_20_LUTC_partial[];
+    static const unsigned char lut_21_LUTWW_partial[];
+    static const unsigned char lut_22_LUTKW_partial[];
+    static const unsigned char lut_23_LUTWK_partial[];
+    static const unsigned char lut_24_LUTKK_partial[];
+    static const unsigned char lut_25_LUTBD_partial[];
+  private:
+    class ScreenPart
+    {
+      public:
+        ScreenPart(uint16_t width, uint16_t height, bool rev_scan, int8_t cs, int8_t dc);
+        void writeScreenBuffer(uint8_t command, uint8_t value = 0xFF); // init controller memory current (default white)
+        void writeImagePart(uint8_t command, const uint8_t bitmap[], int16_t x_part, int16_t y_part, int16_t w_bitmap, int16_t h_bitmap,
+                            int16_t x, int16_t y, int16_t w, int16_t h, bool invert = false, bool mirror_y = false, bool pgm = false);
+        void writeCommand(uint8_t c);
+        void writeData(uint8_t d);
+      private:
+        void _setPartialRamArea(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
+      public:
+        const uint16_t WIDTH, HEIGHT;
+      private:
+        int8_t _cs, _dc;
+        bool _rev_scan;
+        const SPISettings _spi_settings;
+    };
+    ScreenPart M1, S1, M2, S2;
 };
 
 #endif

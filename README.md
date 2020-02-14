@@ -50,6 +50,7 @@
 
 ### Supported SPI e-paper panels from Good Display:
 - GDEP015OC1     1.54" b/w
+- GDEH0154D67    1.54" b/w, replacement for GDEP015OC1
 - GDEW0154Z04    1.54" b/w/r 200x200
 - GDE0213B1      2.13" b/w
 - GDEH0213B72    2.13" b/w, replacement for GDE0213B1
@@ -70,11 +71,29 @@
 - GDEW075T7      7.5" b/w 800x480
 - GDEW075Z09     7.5" b/w/r
 - GDEW075Z08     7.5" b/w/r 800x480
+- GDEW1248T3    12.48 b/w 1304x984
 #### Supported SPI e-paper panels & boards from Waveshare: compare with Good Display, same panel
 #### other supported panels
 - ED060SCT        6" grey levels, on Waveshare e-Paper IT8951 Driver HAT
 
-### Version 1.2.3
+### I can and will only support e-paper panels I have!
+- promotion panels from suppliers are welcome, to add support to GxEPD2
+- donation panels from users are welcome, to add support to GxEPD2
+
+### Version 1.2.5
+- added support for GDEW1248T3 12.84" b/w panel on Waveshare 12.48 e-paper display frame
+- tested with Waveshare Epaper ESP32 Driver Board mounted on connection board
+- tested with Arduino UNO mounted on connection board, is extremely slow
+- doesn't work with Arduino MEGA on connection board with switch set to ICSP and pins bent out of way, reason unknown
+- not tested with other processors
+- caution: wiring connector is on 5V side of level converters!
+#### Version 1.2.4
+- added support for GDEH0154D67 1.54" b/w, replacement for GDEP015OC1
+- added GxEPD2_SerialFlash_Loader, WiFi bitmap downloader for SPI-flash
+- added GxEPD2_SerialFlash_Example, SPI-flash example, e.g. for Winbond 25Q16BVSIG
+- minor fixes and comment cleanups
+- fix refresh(false) in upper layer: add powerOff() after full refresh
+#### Version 1.2.3
 - fixed partial update for 2.13" 3-color and 2.9" 3-color e-paper
 - partial update can be disabled with attribute usePartialUpdateWindow = false
 - added GxEPD2_GFX_Example to show uses of GxEPD2_GFX base class

@@ -1,4 +1,4 @@
-// GxEPD2_Spiffs_Example : Display Library example for SPI e-paper panels from Dalian Good Display and boards from Waveshare.
+// GxEPD2_SerialFlash_Example : Display Library example for SPI e-paper panels from Dalian Good Display and boards from Waveshare.
 // Requires HW SPI and Adafruit_GFX. Caution: the e-paper panels require 3.3V supply AND data lines!
 //
 // Display Library based on Demo Example from Good Display: http://www.e-paper-display.com/download_list/downloadcategoryid=34&isMode=false.html
@@ -11,11 +11,19 @@
 //
 // Library: https://github.com/ZinggJM/GxEPD2
 //
+// this example uses the SerialFlash library from: https://github.com/PaulStoffregen/SerialFlash
+// with a modification for use with ESP32 or the STM32 package available here: https://github.com/ZinggJM/SerialFlash
+// download it as .zip file and install with Library Mananger method "Add .ZIP Library..."
+//
 // note that BMP bitmaps are drawn at physical position in physical orientation of the screen
 
 // Supporting Arduino Forum Topics:
 // Waveshare e-paper displays with SPI: http://forum.arduino.cc/index.php?topic=487007.0
 // Good Display ePaper for Arduino : https://forum.arduino.cc/index.php?topic=436411.0
+//
+// this example uses the SerialFlash library from: https://github.com/PaulStoffregen/SerialFlash
+// with a modification for use with ESP32 or the STM32 package available here: https://github.com/ZinggJM/SerialFlash
+// download it as .zip file and install with Library Mananger method "Add .ZIP Library..."
 
 // mapping suggestion from Waveshare SPI e-Paper to Wemos D1 mini
 // BUSY -> D2, RST -> D4, DC -> D3, CS -> D8, CLK -> D5, DIN -> D7, GND -> GND, 3.3V -> 3.3V
@@ -41,25 +49,29 @@
 #include <GxEPD2_3C.h>
 #include <Fonts/FreeMonoBold9pt7b.h>
 
-#if defined(ESP32)
-#include "SPIFFS.h"
-#endif
+#include <SerialFlash.h>
 
-#include <FS.h>
-#define FileClass fs::File
 #define EPD_CS SS
 
 #if defined (ESP8266)
+const int FlashChipSelect = D1; // digital pin for flash chip CS pin
 // select one and adapt to your mapping, can use full buffer size (full HEIGHT)
 //GxEPD2_BW<GxEPD2_154, GxEPD2_154::HEIGHT> display(GxEPD2_154(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4)); // GDEP015OC1 no longer available
 //GxEPD2_BW<GxEPD2_154_D67, GxEPD2_154_D67::HEIGHT> display(GxEPD2_154_D67(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4)); // GDEH0154D67
-//GxEPD2_BW<GxEPD2_213, GxEPD2_213::HEIGHT> display(GxEPD2_213(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4));
+//GxEPD2_BW<GxEPD2_213, GxEPD2_213::HEIGHT> display(GxEPD2_213(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4)); // GDE0213B1, phased out
+//GxEPD2_BW<GxEPD2_213_B72, GxEPD2_213_B72::HEIGHT> display(GxEPD2_213_B72(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4)); // GDEH0213B72
+//GxEPD2_BW<GxEPD2_213_B73, GxEPD2_213_B73::HEIGHT> display(GxEPD2_213_B73(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4)); // GDEH0213B73
+//GxEPD2_BW<GxEPD2_213_flex, GxEPD2_213_flex::HEIGHT> display(GxEPD2_213_flex(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4)); // GDEW0213I5F
 //GxEPD2_BW<GxEPD2_290, GxEPD2_290::HEIGHT> display(GxEPD2_290(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4));
+//GxEPD2_BW<GxEPD2_290_T5, GxEPD2_290_T5::HEIGHT> display(GxEPD2_290_T5(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4)); // GDEW029T5
+//GxEPD2_BW<GxEPD2_260, GxEPD2_260::HEIGHT> display(GxEPD2_260(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4));
 //GxEPD2_BW<GxEPD2_270, GxEPD2_270::HEIGHT> display(GxEPD2_270(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4));
+//GxEPD2_BW<GxEPD2_371, GxEPD2_371::HEIGHT> display(GxEPD2_371(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4));
 //GxEPD2_BW<GxEPD2_420, GxEPD2_420::HEIGHT> display(GxEPD2_420(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4));
 // can use only half buffer size
 //GxEPD2_BW < GxEPD2_583, GxEPD2_583::HEIGHT / 2 > display(GxEPD2_583(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4));
 //GxEPD2_BW < GxEPD2_750, GxEPD2_750::HEIGHT / 2 > display(GxEPD2_750(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4));
+//GxEPD2_BW < GxEPD2_750_T7, GxEPD2_750_T7::HEIGHT / 2 > display(GxEPD2_750_T7(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4)); // GDEW075T7 800x480
 // 3-color e-papers
 //GxEPD2_3C<GxEPD2_154c, GxEPD2_154c::HEIGHT> display(GxEPD2_154c(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4));
 //GxEPD2_3C<GxEPD2_213c, GxEPD2_213c::HEIGHT> display(GxEPD2_213c(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4));
@@ -68,20 +80,28 @@
 // can use only half buffer size
 //GxEPD2_3C<GxEPD2_420c, GxEPD2_420c::HEIGHT / 2> display(GxEPD2_420c(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4));
 // can use only quarter buffer size
-//GxEPD2_3C<GxEPD2_583c, GxEPD2_583c::HEIGHT / 4> display(GxEPD2_583c(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4));
+//GxEPD2_3C < GxEPD2_583c, GxEPD2_583c::HEIGHT / 4 > display(GxEPD2_583c(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4));
 //GxEPD2_3C<GxEPD2_750c, GxEPD2_750c::HEIGHT / 4> display(GxEPD2_750c(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4));
+//GxEPD2_3C < GxEPD2_750c_Z08, GxEPD2_750c_Z08::HEIGHT / 4 > display(GxEPD2_750c_Z08(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4)); // GDEW075Z08 800x480
 
 // ***** for mapping of Waveshare e-Paper ESP8266 Driver Board *****
 // select one , can use full buffer size (full HEIGHT)
 //GxEPD2_BW<GxEPD2_154, GxEPD2_154::HEIGHT> display(GxEPD2_154(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16)); // GDEP015OC1 no longer available
 //GxEPD2_BW<GxEPD2_154_D67, GxEPD2_154_D67::HEIGHT> display(GxEPD2_154_D67(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16)); // GDEH0154D67
-//GxEPD2_BW<GxEPD2_213, GxEPD2_213::HEIGHT> display(GxEPD2_213(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16));
+//GxEPD2_BW<GxEPD2_213, GxEPD2_213::HEIGHT> display(GxEPD2_213(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16)); // GDE0213B1, phased out
+//GxEPD2_BW<GxEPD2_213_B72, GxEPD2_213_B72::HEIGHT> display(GxEPD2_213_B72(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16)); // GDEH0213B72
+//GxEPD2_BW<GxEPD2_213_B73, GxEPD2_213_B73::HEIGHT> display(GxEPD2_213_B73(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16)); // GDEH0213B73
+//GxEPD2_BW<GxEPD2_213_flex, GxEPD2_213_flex::HEIGHT> display(GxEPD2_213_flex(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16)); // GDEW0213I5F
 //GxEPD2_BW<GxEPD2_290, GxEPD2_290::HEIGHT> display(GxEPD2_290(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16));
+//GxEPD2_BW<GxEPD2_290_T5, GxEPD2_290_T5::HEIGHT> display(GxEPD2_290_T5(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16)); // GDEW029T5
+//GxEPD2_BW<GxEPD2_260, GxEPD2_260::HEIGHT> display(GxEPD2_260(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16));
 //GxEPD2_BW<GxEPD2_270, GxEPD2_270::HEIGHT> display(GxEPD2_270(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16));
+//GxEPD2_BW<GxEPD2_371, GxEPD2_371::HEIGHT> display(GxEPD2_371(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16));
 //GxEPD2_BW<GxEPD2_420, GxEPD2_420::HEIGHT> display(GxEPD2_420(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16));
 // can use only half buffer size
 //GxEPD2_BW < GxEPD2_583, GxEPD2_583::HEIGHT / 2 > display(GxEPD2_583(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16));
 //GxEPD2_BW < GxEPD2_750, GxEPD2_750::HEIGHT / 2 > display(GxEPD2_750(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16));
+//GxEPD2_BW < GxEPD2_750_T7, GxEPD2_750_T7::HEIGHT / 2 > display(GxEPD2_750_T7(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16)); // GDEW075T7 800x480
 // 3-color e-papers
 //GxEPD2_3C<GxEPD2_154c, GxEPD2_154c::HEIGHT> display(GxEPD2_154c(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16));
 //GxEPD2_3C<GxEPD2_213c, GxEPD2_213c::HEIGHT> display(GxEPD2_213c(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16));
@@ -92,57 +112,63 @@
 // can use only quarter buffer size
 //GxEPD2_3C<GxEPD2_583c, GxEPD2_583c::HEIGHT / 4> display(GxEPD2_583c(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16));
 //GxEPD2_3C<GxEPD2_750c, GxEPD2_750c::HEIGHT / 4> display(GxEPD2_750c(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16));
+//GxEPD2_3C<GxEPD2_750c_Z08, GxEPD2_750c_Z08::HEIGHT / 4> display(GxEPD2_750c_Z08(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16)); // GDEW075Z08 800x480
 #endif
 
 #if defined(ESP32)
+const int FlashChipSelect = 17; // as used with my ESP32 breadboard
 // select one and adapt to your mapping, can use full buffer size (full HEIGHT)
 //GxEPD2_BW<GxEPD2_154, GxEPD2_154::HEIGHT> display(GxEPD2_154(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDEP015OC1 no longer available
 //GxEPD2_BW<GxEPD2_154_D67, GxEPD2_154_D67::HEIGHT> display(GxEPD2_154_D67(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDEH0154D67
-//GxEPD2_BW<GxEPD2_213, GxEPD2_213::HEIGHT> display(GxEPD2_213(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
+//GxEPD2_BW<GxEPD2_213, GxEPD2_213::HEIGHT> display(GxEPD2_213(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDE0213B1, phased out
+//GxEPD2_BW<GxEPD2_213_B72, GxEPD2_213_B72::HEIGHT> display(GxEPD2_213_B72(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDEH0213B72
+//GxEPD2_BW<GxEPD2_213_B73, GxEPD2_213_B73::HEIGHT> display(GxEPD2_213_B73(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDEH0213B73
+//GxEPD2_BW<GxEPD2_213_flex, GxEPD2_213_flex::HEIGHT> display(GxEPD2_213_flex(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDEW0213I5F
 //GxEPD2_BW<GxEPD2_290, GxEPD2_290::HEIGHT> display(GxEPD2_290(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
+//GxEPD2_BW<GxEPD2_290_T5, GxEPD2_290_T5::HEIGHT> display(GxEPD2_290_T5(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDEW029T5
+//GxEPD2_BW<GxEPD2_260, GxEPD2_260::HEIGHT> display(GxEPD2_260(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
 //GxEPD2_BW<GxEPD2_270, GxEPD2_270::HEIGHT> display(GxEPD2_270(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
+//GxEPD2_BW<GxEPD2_371, GxEPD2_371::HEIGHT> display(GxEPD2_371(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
 //GxEPD2_BW<GxEPD2_420, GxEPD2_420::HEIGHT> display(GxEPD2_420(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
+//GxEPD2_BW<GxEPD2_583, GxEPD2_583::HEIGHT> display(GxEPD2_583(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
 //GxEPD2_BW<GxEPD2_750, GxEPD2_750::HEIGHT> display(GxEPD2_750(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
+//GxEPD2_BW<GxEPD2_750_T7, GxEPD2_750_T7::HEIGHT> display(GxEPD2_750_T7(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDEW075T7 800x480
 // 3-color e-papers
 //GxEPD2_3C<GxEPD2_154c, GxEPD2_154c::HEIGHT> display(GxEPD2_154c(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
 //GxEPD2_3C<GxEPD2_213c, GxEPD2_213c::HEIGHT> display(GxEPD2_213c(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
 //GxEPD2_3C<GxEPD2_290c, GxEPD2_290c::HEIGHT> display(GxEPD2_290c(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
 //GxEPD2_3C<GxEPD2_270c, GxEPD2_270c::HEIGHT> display(GxEPD2_270c(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
 //GxEPD2_3C<GxEPD2_420c, GxEPD2_420c::HEIGHT> display(GxEPD2_420c(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
+//GxEPD2_3C<GxEPD2_583c, GxEPD2_583c::HEIGHT> display(GxEPD2_583c(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
 //GxEPD2_3C<GxEPD2_750c, GxEPD2_750c::HEIGHT> display(GxEPD2_750c(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
-
-// grey levels parallel IF e-papers on Waveshare e-Paper IT8951 Driver HAT
-// HRDY -> 4, RST -> 16, CS -> SS(5), SCK -> SCK(18), MOSI -> MOSI(23), MISO -> MISO(19), GND -> GND, 5V -> 5V
-// note: 5V supply needs to be exact and strong; 5V over diode from USB (e.g. Wemos D1 mini) doesn't work!
-//GxEPD2_BW<GxEPD2_it60, GxEPD2_it60::HEIGHT> display(GxEPD2_it60(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
-
-// Waveshare 12.48 b/w SPI display board and frame or Good Display 12.48 b/w panel GDEW1248T3
-// general constructor for use with all parameters, e.g. for Waveshare ESP32 driver board mounted on connection board
-//GxEPD2_BW < GxEPD2_1248, GxEPD2_1248::HEIGHT / 4 >
-//display(GxEPD2_1248(/*sck=*/ 13, /*miso=*/ 12, /*mosi=*/ 14, /*cs_m1=*/ 23, /*cs_s1=*/ 22, /*cs_m2=*/ 16, /*cs_s2=*/ 19,
-//                             /*dc1=*/ 25, /*dc2=*/ 17, /*rst1=*/ 33, /*rst2=*/ 5, /*busy_m1=*/ 32, /*busy_s1=*/ 26, /*busy_m2=*/ 18, /*busy_s2=*/ 4));
+//GxEPD2_3C<GxEPD2_750c_Z08, GxEPD2_750c_Z08::HEIGHT> display(GxEPD2_750c_Z08(/*CS=5*/ EPD_CS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDEW075Z08 800x480
 #endif
 
 // function declaration with default parameter
 // note that BMP bitmaps are drawn at physical position in physical orientation of the screen
-void drawBitmapFromSpiffs(const char *filename, int16_t x, int16_t y, bool with_color = true);
+void drawBitmapFromSerialFlash(const char *filename, int16_t x, int16_t y, bool with_color = true);
 
 // bitmap drawing using buffered graphics, e.g. for small bitmaps or for GxEPD2_154c
 // draws BMP bitmap according to set orientation
 // partial_update selects refresh mode (not effective for GxEPD2_154c)
 // overwrite = true does not clear buffer before drawing, use only if buffer is full height
-void drawBitmapFromSpiffs_Buffered(const char *filename, int16_t x, int16_t y, bool with_color = true, bool partial_update = false, bool overwrite = false);
+void drawBitmapFromSerialFlash_Buffered(const char *filename, int16_t x, int16_t y, bool with_color = true, bool partial_update = false, bool overwrite = false);
 
 void setup()
 {
   Serial.begin(115200);
   Serial.println();
-  Serial.println("GxEPD2_Spiffs_Example");
+  Serial.println("GxEPD2_SerialFlash_Example");
 
-  display.init(115200);
+  display.init();
 
-  SPIFFS.begin();
-  Serial.println("SPIFFS started");
+  if (!SerialFlash.begin(FlashChipSelect))
+  {
+    Serial.println("Unable to access SPI Flash chip");
+    return;
+  }
+  Serial.println("SerialFlash started");
+
   listFiles();
 
   if ((display.epd2.panel == GxEPD2::GDEW0154Z04) || false)
@@ -157,34 +183,69 @@ void setup()
     //drawBitmaps_test();
   }
 
-  Serial.println("GxEPD2_Spiffs_Example done");
+  Serial.println("GxEPD2_SerialFlash_Example done");
 }
 
 void loop(void)
 {
 }
 
+void listFiles()
+{
+  Serial.println("All Files on SPI Flash chip:");
+  SerialFlash.opendir();
+  while (1)
+  {
+    char filename[64];
+    uint32_t filesize;
+
+    if (SerialFlash.readdir(filename, sizeof(filename), filesize))
+    {
+      Serial.print("  ");
+      Serial.print(filename);
+      spaces(20 - strlen(filename));
+      Serial.print("  ");
+      Serial.print(filesize);
+      Serial.print(" bytes");
+      Serial.println();
+    }
+    else
+    {
+      Serial.println("no more files...");
+      break; // no more files
+    }
+  }
+}
+
+void spaces(int num)
+{
+  for (int i = 0; i < num; i++)
+  {
+    Serial.print(" ");
+  }
+}
+
 void drawBitmaps_200x200()
 {
   int16_t x = (display.width() - 200) / 2;
   int16_t y = (display.height() - 200) / 2;
-  drawBitmapFromSpiffs("logo200x200.bmp", x, y);
+  drawBitmapFromSerialFlash("logo200x200.bmp", x, y);
   delay(2000);
-  drawBitmapFromSpiffs("first200x200.bmp", x, y);
+  drawBitmapFromSerialFlash("first200x200.bmp", x, y);
   delay(2000);
-  drawBitmapFromSpiffs("second200x200.bmp", x, y);
+  drawBitmapFromSerialFlash("second200x200.bmp", x, y);
   delay(2000);
-  drawBitmapFromSpiffs("third200x200.bmp", x, y);
+  drawBitmapFromSerialFlash("third200x200.bmp", x, y);
   delay(2000);
-  drawBitmapFromSpiffs("fourth200x200.bmp", x, y);
+  drawBitmapFromSerialFlash("fourth200x200.bmp", x, y);
   delay(2000);
-  drawBitmapFromSpiffs("fifth200x200.bmp", x, y);
+  drawBitmapFromSerialFlash("fifth200x200.bmp", x, y);
   delay(2000);
-  drawBitmapFromSpiffs("sixth200x200.bmp", x, y);
+  drawBitmapFromSerialFlash("sixth200x200.bmp", x, y);
   delay(2000);
-  drawBitmapFromSpiffs("seventh200x200.bmp", x, y);
+  drawBitmapFromSerialFlash("seventh200x200.bmp", x, y);
   delay(2000);
-  drawBitmapFromSpiffs("eighth200x200.bmp", x, y);
+  drawBitmapFromSerialFlash("eighth200x200.bmp", x, y);
   delay(2000);
 }
 
@@ -192,45 +253,45 @@ void drawBitmaps_other()
 {
   int16_t w2 = display.width() / 2;
   int16_t h2 = display.height() / 2;
-  drawBitmapFromSpiffs("chanceflurries.bmp", w2 - 50, h2 - 50, false);
+  drawBitmapFromSerialFlash("chanceflurries.bmp", w2 - 50, h2 - 50, false);
   delay(2000);
-  drawBitmapFromSpiffs("betty_1.bmp", w2 - 100, h2 - 160);
+  drawBitmapFromSerialFlash("betty_1.bmp", w2 - 100, h2 - 160);
   delay(2000);
-  drawBitmapFromSpiffs("betty_4.bmp", w2 - 102, h2 - 126);
+  drawBitmapFromSerialFlash("betty_4.bmp", w2 - 102, h2 - 126);
   delay(2000);
-  drawBitmapFromSpiffs("marilyn_240x240x8.bmp", w2 - 120, h2 - 120);
+  drawBitmapFromSerialFlash("marilyn_240x240x8.bmp", w2 - 120, h2 - 120);
   delay(2000);
-  drawBitmapFromSpiffs("miniwoof.bmp", w2 - 60, h2 - 80);
+  drawBitmapFromSerialFlash("miniwoof.bmp", w2 - 60, h2 - 80);
   delay(2000);
-  drawBitmapFromSpiffs("tiger.bmp", w2 - 160, h2 - 120);
+  drawBitmapFromSerialFlash("tiger.bmp", w2 - 160, h2 - 120);
   delay(2000);
-  drawBitmapFromSpiffs("tiger_178x160x4.bmp", w2 - 89, h2 - 80);
+  drawBitmapFromSerialFlash("tiger_178x160x4.bmp", w2 - 89, h2 - 80);
   delay(2000);
-  drawBitmapFromSpiffs("tiger_240x317x4.bmp", w2 - 120, h2 - 160);
+  drawBitmapFromSerialFlash("tiger_240x317x4.bmp", w2 - 120, h2 - 160);
   delay(2000);
-  drawBitmapFromSpiffs("tiger_320x200x24.bmp", w2 - 160, h2 - 100);
+  drawBitmapFromSerialFlash("tiger_320x200x24.bmp", w2 - 160, h2 - 100);
   delay(2000);
-  drawBitmapFromSpiffs("woof.bmp", w2 - 120, h2 - 160);
+  drawBitmapFromSerialFlash("woof.bmp", w2 - 120, h2 - 160);
   delay(2000);
 }
 
 void drawBitmaps_test()
 {
-  drawBitmapFromSpiffs("output5.bmp", 0, 0);
+  drawBitmapFromSerialFlash("output5.bmp", 0, 0);
   delay(2000);
-  drawBitmapFromSpiffs("output6.bmp", 0, 0);
+  drawBitmapFromSerialFlash("output6.bmp", 0, 0);
   delay(2000);
-  drawBitmapFromSpiffs("tractor_1.bmp", 0, 0);
+  drawBitmapFromSerialFlash("tractor_1.bmp", 0, 0);
   delay(2000);
-  drawBitmapFromSpiffs("tractor_4.bmp", 0, 0);
+  drawBitmapFromSerialFlash("tractor_4.bmp", 0, 0);
   delay(2000);
-  drawBitmapFromSpiffs("tractor_8.bmp", 0, 0);
+  drawBitmapFromSerialFlash("tractor_8.bmp", 0, 0);
   delay(2000);
-  drawBitmapFromSpiffs("tractor_11.bmp", 0, 0);
+  drawBitmapFromSerialFlash("tractor_11.bmp", 0, 0);
   delay(2000);
-  drawBitmapFromSpiffs("tractor_44.bmp", 0, 0);
+  drawBitmapFromSerialFlash("tractor_44.bmp", 0, 0);
   delay(2000);
-  drawBitmapFromSpiffs("tractor_88.bmp", 0, 0);
+  drawBitmapFromSerialFlash("tractor_88.bmp", 0, 0);
   delay(2000);
 }
 
@@ -238,23 +299,23 @@ void drawBitmapsBuffered_200x200()
 {
   int16_t x = (display.width() - 200) / 2;
   int16_t y = (display.height() - 200) / 2;
-  drawBitmapFromSpiffs_Buffered("logo200x200.bmp", x, y);
+  drawBitmapFromSerialFlash_Buffered("logo200x200.bmp", x, y);
   delay(2000);
-  drawBitmapFromSpiffs_Buffered("first200x200.bmp", x, y);
+  drawBitmapFromSerialFlash_Buffered("first200x200.bmp", x, y);
   delay(2000);
-  drawBitmapFromSpiffs_Buffered("second200x200.bmp", x, y);
+  drawBitmapFromSerialFlash_Buffered("second200x200.bmp", x, y);
   delay(2000);
-  drawBitmapFromSpiffs_Buffered("third200x200.bmp", x, y);
+  drawBitmapFromSerialFlash_Buffered("third200x200.bmp", x, y);
   delay(2000);
-  drawBitmapFromSpiffs_Buffered("fourth200x200.bmp", x, y);
+  drawBitmapFromSerialFlash_Buffered("fourth200x200.bmp", x, y);
   delay(2000);
-  drawBitmapFromSpiffs_Buffered("fifth200x200.bmp", x, y);
+  drawBitmapFromSerialFlash_Buffered("fifth200x200.bmp", x, y);
   delay(2000);
-  drawBitmapFromSpiffs_Buffered("sixth200x200.bmp", x, y);
+  drawBitmapFromSerialFlash_Buffered("sixth200x200.bmp", x, y);
   delay(2000);
-  drawBitmapFromSpiffs_Buffered("seventh200x200.bmp", x, y);
+  drawBitmapFromSerialFlash_Buffered("seventh200x200.bmp", x, y);
   delay(2000);
-  drawBitmapFromSpiffs_Buffered("eighth200x200.bmp", x, y);
+  drawBitmapFromSerialFlash_Buffered("eighth200x200.bmp", x, y);
   delay(2000);
 }
 
@@ -262,25 +323,25 @@ void drawBitmapsBuffered_other()
 {
   int16_t w2 = display.width() / 2;
   int16_t h2 = display.height() / 2;
-  drawBitmapFromSpiffs_Buffered("chanceflurries.bmp", w2 - 50, h2 - 50, false);
+  drawBitmapFromSerialFlash_Buffered("chanceflurries.bmp", w2 - 50, h2 - 50, false);
   delay(2000);
-  drawBitmapFromSpiffs_Buffered("betty_1.bmp", w2 - 100, h2 - 160);
+  drawBitmapFromSerialFlash_Buffered("betty_1.bmp", w2 - 100, h2 - 160);
   delay(2000);
-  drawBitmapFromSpiffs_Buffered("betty_4.bmp", w2 - 102, h2 - 126);
+  drawBitmapFromSerialFlash_Buffered("betty_4.bmp", w2 - 102, h2 - 126);
   delay(2000);
-  drawBitmapFromSpiffs_Buffered("marilyn_240x240x8.bmp", w2 - 120, h2 - 120);
+  drawBitmapFromSerialFlash_Buffered("marilyn_240x240x8.bmp", w2 - 120, h2 - 120);
   delay(2000);
-  drawBitmapFromSpiffs_Buffered("miniwoof.bmp", w2 - 60, h2 - 80);
+  drawBitmapFromSerialFlash_Buffered("miniwoof.bmp", w2 - 60, h2 - 80);
   delay(2000);
-  drawBitmapFromSpiffs_Buffered("tiger.bmp", w2 - 160, h2 - 120);
+  drawBitmapFromSerialFlash_Buffered("tiger.bmp", w2 - 160, h2 - 120);
   delay(2000);
-  drawBitmapFromSpiffs_Buffered("tiger_178x160x4.bmp", w2 - 89, h2 - 80);
+  drawBitmapFromSerialFlash_Buffered("tiger_178x160x4.bmp", w2 - 89, h2 - 80);
   delay(2000);
-  drawBitmapFromSpiffs_Buffered("tiger_240x317x4.bmp", w2 - 120, h2 - 160);
+  drawBitmapFromSerialFlash_Buffered("tiger_240x317x4.bmp", w2 - 120, h2 - 160);
   delay(2000);
-  drawBitmapFromSpiffs_Buffered("tiger_320x200x24.bmp", w2 - 160, h2 - 100);
+  drawBitmapFromSerialFlash_Buffered("tiger_320x200x24.bmp", w2 - 160, h2 - 100);
   delay(2000);
-  drawBitmapFromSpiffs_Buffered("woof.bmp", w2 - 120, h2 - 160);
+  drawBitmapFromSerialFlash_Buffered("woof.bmp", w2 - 120, h2 - 160);
   delay(2000);
 }
 
@@ -295,9 +356,8 @@ uint8_t output_row_color_buffer[max_row_width / 8]; // buffer for at least one r
 uint8_t mono_palette_buffer[max_palette_pixels / 8]; // palette buffer for depth <= 8 b/w
 uint8_t color_palette_buffer[max_palette_pixels / 8]; // palette buffer for depth <= 8 c/w
 
-void drawBitmapFromSpiffs(const char *filename, int16_t x, int16_t y, bool with_color)
+void drawBitmapFromSerialFlash(const char *filename, int16_t x, int16_t y, bool with_color)
 {
-  fs::File file;
   bool valid = false; // valid format to be handled
   bool flip = true; // bitmap is stored bottom-to-top
   uint32_t startTime = millis();
@@ -306,11 +366,7 @@ void drawBitmapFromSpiffs(const char *filename, int16_t x, int16_t y, bool with_
   Serial.print("Loading image '");
   Serial.print(filename);
   Serial.println('\'');
-#if defined(ESP32)
-  file = SPIFFS.open(String("/") + filename, "r");
-#else
-  file = SPIFFS.open(filename, "r");
-#endif
+  SerialFlashFile file = SerialFlash.open(filename);
   if (!file)
   {
     Serial.print("File not found");
@@ -365,10 +421,10 @@ void drawBitmapFromSpiffs(const char *filename, int16_t x, int16_t y, bool with_
           file.seek(imageOffset - (4 << depth)); // 54 for regular, diff for colorsimportant
           for (uint16_t pn = 0; pn < (1 << depth); pn++)
           {
-            blue  = file.read();
-            green = file.read();
-            red   = file.read();
-            file.read();
+            blue  = read8(file);
+            green = read8(file);
+            red   = read8(file);
+            read8(file);
             whitish = with_color ? ((red > 0x80) && (green > 0x80) && (blue > 0x80)) : ((red + green + blue) > 3 * 0x80); // whitish
             colored = (red > 0xF0) || ((green > 0xF0) && (blue > 0xF0)); // reddish or yellowish?
             if (0 == pn % 8) mono_palette_buffer[pn / 8] = 0;
@@ -480,9 +536,8 @@ void drawBitmapFromSpiffs(const char *filename, int16_t x, int16_t y, bool with_
   }
 }
 
-void drawBitmapFromSpiffs_Buffered(const char *filename, int16_t x, int16_t y, bool with_color, bool partial_update, bool overwrite)
+void drawBitmapFromSerialFlash_Buffered(const char *filename, int16_t x, int16_t y, bool with_color, bool partial_update, bool overwrite)
 {
-  fs::File file;
   bool valid = false; // valid format to be handled
   bool flip = true; // bitmap is stored bottom-to-top
   uint32_t startTime = millis();
@@ -491,11 +546,7 @@ void drawBitmapFromSpiffs_Buffered(const char *filename, int16_t x, int16_t y, b
   Serial.print("Loading image '");
   Serial.print(filename);
   Serial.println('\'');
-#if defined(ESP32)
-  file = SPIFFS.open(String("/") + filename, "r");
-#else
-  file = SPIFFS.open(filename, "r");
-#endif
+  SerialFlashFile file = SerialFlash.open(filename);
   if (!file)
   {
     Serial.print("File not found");
@@ -550,10 +601,10 @@ void drawBitmapFromSpiffs_Buffered(const char *filename, int16_t x, int16_t y, b
           file.seek(imageOffset - (4 << depth)); // 54 for regular, diff for colorsimportant
           for (uint16_t pn = 0; pn < (1 << depth); pn++)
           {
-            blue  = file.read();
-            green = file.read();
-            red   = file.read();
-            file.read();
+            blue  = read8(file);
+            green = read8(file);
+            red   = read8(file);
+            read8(file);
             whitish = with_color ? ((red > 0x80) && (green > 0x80) && (blue > 0x80)) : ((red + green + blue) > 3 * 0x80); // whitish
             colored = (red > 0xF0) || ((green > 0xF0) && (blue > 0xF0)); // reddish or yellowish?
             if (0 == pn % 8) mono_palette_buffer[pn / 8] = 0;
@@ -662,22 +713,25 @@ void drawBitmapFromSpiffs_Buffered(const char *filename, int16_t x, int16_t y, b
   }
 }
 
-uint16_t read16(fs::File& f)
+uint8_t read8(SerialFlashFile& f)
 {
-  // BMP data is stored little-endian, same as Arduino.
-  uint16_t result;
-  ((uint8_t *)&result)[0] = f.read(); // LSB
-  ((uint8_t *)&result)[1] = f.read(); // MSB
+  uint8_t result;
+  f.read((void*)&result, 1);
   return result;
 }
 
-uint32_t read32(fs::File& f)
+uint16_t read16(SerialFlashFile& f)
+{
+  // BMP data is stored little-endian, same as Arduino.
+  uint16_t result;
+  f.read((void*)&result, 2);
+  return result;
+}
+
+uint32_t read32(SerialFlashFile& f)
 {
   // BMP data is stored little-endian, same as Arduino.
   uint32_t result;
-  ((uint8_t *)&result)[0] = f.read(); // LSB
-  ((uint8_t *)&result)[1] = f.read();
-  ((uint8_t *)&result)[2] = f.read();
-  ((uint8_t *)&result)[3] = f.read(); // MSB
+  f.read((void*)&result, 4);
   return result;
 }

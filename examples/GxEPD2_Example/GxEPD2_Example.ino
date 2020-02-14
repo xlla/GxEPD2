@@ -1,5 +1,5 @@
 // Display Library example for SPI e-paper panels from Dalian Good Display and boards from Waveshare.
-// Requires HW SPI and Adafruit_GFX. Caution: these e-papers require 3.3V supply AND data lines!
+// Requires HW SPI and Adafruit_GFX. Caution: the e-paper panels require 3.3V supply AND data lines!
 //
 // Display Library based on Demo Example from Good Display: http://www.e-paper-display.com/download_list/downloadcategoryid=34&isMode=false.html
 //
@@ -53,7 +53,8 @@
 
 #if defined (ESP8266)
 // select one and adapt to your mapping, can use full buffer size (full HEIGHT)
-//GxEPD2_BW<GxEPD2_154, GxEPD2_154::HEIGHT> display(GxEPD2_154(/*CS=D8*/ SS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4));
+//GxEPD2_BW<GxEPD2_154, GxEPD2_154::HEIGHT> display(GxEPD2_154(/*CS=D8*/ SS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4)); // GDEP015OC1 no longer available
+//GxEPD2_BW<GxEPD2_154_D67, GxEPD2_154_D67::HEIGHT> display(GxEPD2_154_D67(/*CS=D8*/ SS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4)); // GDEH0154D67
 //GxEPD2_BW<GxEPD2_213, GxEPD2_213::HEIGHT> display(GxEPD2_213(/*CS=D8*/ SS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4)); // GDE0213B1, phased out
 //GxEPD2_BW<GxEPD2_213_B72, GxEPD2_213_B72::HEIGHT> display(GxEPD2_213_B72(/*CS=D8*/ SS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4)); // GDEH0213B72
 //GxEPD2_BW<GxEPD2_213_B73, GxEPD2_213_B73::HEIGHT> display(GxEPD2_213_B73(/*CS=D8*/ SS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4)); // GDEH0213B73
@@ -86,7 +87,8 @@
 
 // ***** for mapping of Waveshare e-Paper ESP8266 Driver Board *****
 // select one , can use full buffer size (full HEIGHT)
-//GxEPD2_BW<GxEPD2_154, GxEPD2_154::HEIGHT> display(GxEPD2_154(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16));
+//GxEPD2_BW<GxEPD2_154, GxEPD2_154::HEIGHT> display(GxEPD2_154(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16)); // GDEP015OC1 no longer available
+//GxEPD2_BW<GxEPD2_154_D67, GxEPD2_154_D67::HEIGHT> display(GxEPD2_154_D67(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16)); // GDEH0154D67
 //GxEPD2_BW<GxEPD2_213, GxEPD2_213::HEIGHT> display(GxEPD2_213(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16)); // GDE0213B1, phased out
 //GxEPD2_BW<GxEPD2_213_B72, GxEPD2_213_B72::HEIGHT> display(GxEPD2_213_B72(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16)); // GDEH0213B72
 //GxEPD2_BW<GxEPD2_213_B73, GxEPD2_213_B73::HEIGHT> display(GxEPD2_213_B73(/*CS=15*/ SS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16)); // GDEH0213B73
@@ -152,7 +154,8 @@ GxEPD2_BW<GxEPD2_154_D67, GxEPD2_154_D67::HEIGHT> display(GxEPD2_154_D67(/*CS=27
 
 #if defined(ESP32)
 // select one and adapt to your mapping, can use full buffer size (full HEIGHT)
-//GxEPD2_BW<GxEPD2_154, GxEPD2_154::HEIGHT> display(GxEPD2_154(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
+//GxEPD2_BW<GxEPD2_154, GxEPD2_154::HEIGHT> display(GxEPD2_154(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDEP015OC1 no longer available
+//GxEPD2_BW<GxEPD2_154_D67, GxEPD2_154_D67::HEIGHT> display(GxEPD2_154_D67(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDEH0154D67
 //GxEPD2_BW<GxEPD2_213, GxEPD2_213::HEIGHT> display(GxEPD2_213(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDE0213B1, phased out
 //GxEPD2_BW<GxEPD2_213_B72, GxEPD2_213_B72::HEIGHT> display(GxEPD2_213_B72(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDEH0213B72
 //GxEPD2_BW<GxEPD2_213_B73, GxEPD2_213_B73::HEIGHT> display(GxEPD2_213_B73(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDEH0213B73
@@ -175,17 +178,25 @@ GxEPD2_BW<GxEPD2_154_D67, GxEPD2_154_D67::HEIGHT> display(GxEPD2_154_D67(/*CS=27
 //GxEPD2_3C<GxEPD2_583c, GxEPD2_583c::HEIGHT> display(GxEPD2_583c(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
 //GxEPD2_3C<GxEPD2_750c, GxEPD2_750c::HEIGHT> display(GxEPD2_750c(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
 //GxEPD2_3C<GxEPD2_750c_Z08, GxEPD2_750c_Z08::HEIGHT> display(GxEPD2_750c_Z08(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDEW075Z08 800x480
+
 // grey levels parallel IF e-papers on Waveshare e-Paper IT8951 Driver HAT
 // HRDY -> 4, RST -> 16, CS -> SS(5), SCK -> SCK(18), MOSI -> MOSI(23), MISO -> MISO(19), GND -> GND, 5V -> 5V
 // note: 5V supply needs to be exact and strong; 5V over diode from USB (e.g. Wemos D1 mini) doesn't work!
 //GxEPD2_BW<GxEPD2_it60, GxEPD2_it60::HEIGHT> display(GxEPD2_it60(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
+
+// Waveshare 12.48 b/w SPI display board and frame or Good Display 12.48 b/w panel GDEW1248T3
+// general constructor for use with all parameters, e.g. for Waveshare ESP32 driver board mounted on connection board
+//GxEPD2_BW < GxEPD2_1248, GxEPD2_1248::HEIGHT / 4 >
+//display(GxEPD2_1248(/*sck=*/ 13, /*miso=*/ 12, /*mosi=*/ 14, /*cs_m1=*/ 23, /*cs_s1=*/ 22, /*cs_m2=*/ 16, /*cs_s2=*/ 19,
+//                             /*dc1=*/ 25, /*dc2=*/ 17, /*rst1=*/ 33, /*rst2=*/ 5, /*busy_m1=*/ 32, /*busy_s1=*/ 26, /*busy_m2=*/ 18, /*busy_s2=*/ 4));
 #endif
 
 #if defined(_BOARD_GENERIC_STM32F103C_H_)
 #define MAX_DISPLAY_BUFFER_SIZE 15000ul // ~15k is a good compromise
 #define MAX_HEIGHT(EPD) (EPD::HEIGHT <= MAX_DISPLAY_BUFFER_SIZE / (EPD::WIDTH / 8) ? EPD::HEIGHT : MAX_DISPLAY_BUFFER_SIZE / (EPD::WIDTH / 8))
 // select one and adapt to your mapping
-GxEPD2_BW<GxEPD2_154, MAX_HEIGHT(GxEPD2_154)> display(GxEPD2_154(/*CS=4*/ SS, /*DC=*/ 3, /*RST=*/ 2, /*BUSY=*/ 1));
+//GxEPD2_BW<GxEPD2_154, MAX_HEIGHT(GxEPD2_154)> display(GxEPD2_154(/*CS=4*/ SS, /*DC=*/ 3, /*RST=*/ 2, /*BUSY=*/ 1)); // GDEP015OC1 no longer available
+GxEPD2_BW<GxEPD2_154_D67, MAX_HEIGHT(GxEPD2_154_D67)> display(GxEPD2_154_D67(/*CS=4*/ SS, /*DC=*/ 3, /*RST=*/ 2, /*BUSY=*/ 1));// GDEH0154D67
 //GxEPD2_BW<GxEPD2_213, MAX_HEIGHT(GxEPD2_213)> display(GxEPD2_213(/*CS=4*/ SS, /*DC=*/ 3, /*RST=*/ 2, /*BUSY=*/ 1)); // GDE0213B1, phased out
 //GxEPD2_BW<GxEPD2_213_B72, MAX_HEIGHT(GxEPD2_213_B72)> display(GxEPD2_213_B72(/*CS=4*/ SS, /*DC=*/ 3, /*RST=*/ 2, /*BUSY=*/ 1)); // GDEH0213B72
 //GxEPD2_BW<GxEPD2_213_B73, MAX_HEIGHT(GxEPD2_213_B73)> display(GxEPD2_213_B73(/*CS=4*/ SS, /*DC=*/ 3, /*RST=*/ 2, /*BUSY=*/ 1)); // GDEH0213B73
@@ -212,10 +223,15 @@ GxEPD2_BW<GxEPD2_154, MAX_HEIGHT(GxEPD2_154)> display(GxEPD2_154(/*CS=4*/ SS, /*
 #endif
 
 #if defined(__AVR)
+#if defined (ARDUINO_AVR_MEGA2560)
+#define MAX_DISPLAY_BUFFER_SIZE 5000 // e.g. full height for 200x200
+#else
 #define MAX_DISPLAY_BUFFER_SIZE 800 // 
+#endif
 #define MAX_HEIGHT(EPD) (EPD::HEIGHT <= MAX_DISPLAY_BUFFER_SIZE / (EPD::WIDTH / 8) ? EPD::HEIGHT : MAX_DISPLAY_BUFFER_SIZE / (EPD::WIDTH / 8))
 // select one and adapt to your mapping
-//GxEPD2_BW<GxEPD2_154, MAX_HEIGHT(GxEPD2_154)> display(GxEPD2_154(/*CS=10*/ SS, /*DC=*/ 8, /*RST=*/ 9, /*BUSY=*/ 7));
+//GxEPD2_BW<GxEPD2_154, MAX_HEIGHT(GxEPD2_154)> display(GxEPD2_154(/*CS=10*/ SS, /*DC=*/ 8, /*RST=*/ 9, /*BUSY=*/ 7)); // GDEP015OC1 no longer available
+//GxEPD2_BW<GxEPD2_154_D67, MAX_HEIGHT(GxEPD2_154_D67)> display(GxEPD2_154_D67(/*CS=10*/ SS, /*DC=*/ 8, /*RST=*/ 9, /*BUSY=*/ 7)); // GDEH0154D67
 //GxEPD2_BW<GxEPD2_213, MAX_HEIGHT(GxEPD2_213)> display(GxEPD2_213(/*CS=10*/ SS, /*DC=*/ 8, /*RST=*/ 9, /*BUSY=*/ 7)); // GDE0213B1, phased out
 //GxEPD2_BW<GxEPD2_213_B72, MAX_HEIGHT(GxEPD2_213_B72)> display(GxEPD2_213_B72(/*CS=10*/ SS, /*DC=*/ 8, /*RST=*/ 9, /*BUSY=*/ 7)); // GDEH0213B72
 //GxEPD2_BW<GxEPD2_213_B73, MAX_HEIGHT(GxEPD2_213_B73)> display(GxEPD2_213_B73(/*CS=10*/ SS, /*DC=*/ 8, /*RST=*/ 9, /*BUSY=*/ 7)); // GDEH0213B73
@@ -246,7 +262,8 @@ GxEPD2_BW<GxEPD2_154, MAX_HEIGHT(GxEPD2_154)> display(GxEPD2_154(/*CS=4*/ SS, /*
 // NOTE: the VCC pin on the 11-pinholes for pin connectors shouldn't be used, it seems to get back-fed from Arduino data pins through protection diodes of the level converter
 // NOTE: the VCC pin should be fed from Arduino 5V pin for use on any 5V Arduino (did they forget to add this connection or add a jumper?)
 // select one and adapt to your mapping
-//GxEPD2_BW<GxEPD2_154, MAX_HEIGHT(GxEPD2_154)> display(GxEPD2_154(/*CS=10*/ SS, /*DC=*/ 9, /*RST=*/ 8, /*BUSY=*/ 7));
+//GxEPD2_BW<GxEPD2_154, MAX_HEIGHT(GxEPD2_154)> display(GxEPD2_154(/*CS=10*/ SS, /*DC=*/ 9, /*RST=*/ 8, /*BUSY=*/ 7)); // GDEP015OC1 no longer available
+//GxEPD2_BW<GxEPD2_154_D67, MAX_HEIGHT(GxEPD2_154_D67)> display(GxEPD2_154_D67(/*CS=10*/ SS, /*DC=*/ 9, /*RST=*/ 8, /*BUSY=*/ 7)); // GDEH0154D67
 //GxEPD2_BW<GxEPD2_213, MAX_HEIGHT(GxEPD2_213)> display(GxEPD2_213(/*CS=10*/ SS, /*DC=*/ 9, /*RST=*/ 8, /*BUSY=*/ 7)); // GDE0213B1, phased out
 //GxEPD2_BW<GxEPD2_213_B72, MAX_HEIGHT(GxEPD2_213_B72)> display(GxEPD2_213_B72(/*CS=10*/ SS, /*DC=*/ 9, /*RST=*/ 8, /*BUSY=*/ 7)); // GDEH0213B72
 //GxEPD2_BW<GxEPD2_213_B73, MAX_HEIGHT(GxEPD2_213_B73)> display(GxEPD2_213_B73(/*CS=10*/ SS, /*DC=*/ 9, /*RST=*/ 8, /*BUSY=*/ 7)); // GDEH0213B73
@@ -270,6 +287,12 @@ GxEPD2_BW<GxEPD2_154, MAX_HEIGHT(GxEPD2_154)> display(GxEPD2_154(/*CS=4*/ SS, /*
 //GxEPD2_3C<GxEPD2_583c, MAX_HEIGHT_3C(GxEPD2_583c)> display(GxEPD2_583c(/*CS=10*/ SS, /*DC=*/ 9, /*RST=*/ 8, /*BUSY=*/ 7));
 //GxEPD2_3C<GxEPD2_750c, MAX_HEIGHT_3C(GxEPD2_750c)> display(GxEPD2_750c(/*CS=10*/ SS, /*DC=*/ 9, /*RST=*/ 8, /*BUSY=*/ 7));
 //GxEPD2_3C<GxEPD2_750c_Z08, MAX_HEIGHT_3C(GxEPD2_750c_Z08)> display(GxEPD2_750c_Z08(/*CS=10*/ SS, /*DC=*/ 9, /*RST=*/ 8, /*BUSY=*/ 7)); // GDEW075Z08 800x480
+
+// Waveshare 12.48 b/w SPI display board and frame or Good Display 12.48 b/w panel GDEW1248T3
+// general constructor for use with standard SPI pins, default SCK, MISO and MOSI, for UNO on UNO connectors
+//GxEPD2_BW < GxEPD2_1248, MAX_HEIGHT(GxEPD2_1248)>
+//display(GxEPD2_1248(/*cs_m1=*/ 2, /*cs_s1=*/ 3, /*cs_m2=*/ A4, /*cs_s2=*/ A0, /*dc1=*/ 6, /*dc2=*/ A3, /*rst1=*/ 5, /*rst2=*/ A2,
+//                               /*busy_m1=*/ 4, /*busy_s1=*/ 7, /*busy_m2=*/ A1, /*busy_s2=*/ A5));
 #endif
 
 #include "GxEPD2_boards_added.h"
@@ -282,24 +305,27 @@ GxEPD2_BW<GxEPD2_154, MAX_HEIGHT(GxEPD2_154)> display(GxEPD2_154(/*CS=4*/ SS, /*
 
 // comment out unused bitmaps to reduce code space used
 #include "bitmaps/Bitmaps200x200.h" // 1.54" b/w
-#include "bitmaps/Bitmaps104x212.h" // 2.13" b/w flexible GDEW0213I5F
-#include "bitmaps/Bitmaps128x250.h" // 2.13" b/w
-#include "bitmaps/Bitmaps128x296.h" // 2.9"  b/w
-#include "bitmaps/Bitmaps152x296.h" // 2.6"  b/w
-#include "bitmaps/Bitmaps176x264.h" // 2.7"  b/w
-#include "bitmaps/Bitmaps240x416.h" // 3.71"  b/w
-#include "bitmaps/Bitmaps400x300.h" // 4.2"  b/w
-#include "bitmaps/Bitmaps640x384.h" // 7.5"  b/w
-#include "bitmaps/Bitmaps800x480.h" // 7.5"  b/w
+// #include "bitmaps/Bitmaps104x212.h" // 2.13" b/w flexible GDEW0213I5F
+// #include "bitmaps/Bitmaps128x250.h" // 2.13" b/w
+// #include "bitmaps/Bitmaps128x296.h" // 2.9"  b/w
+// #include "bitmaps/Bitmaps152x296.h" // 2.6"  b/w
+// #include "bitmaps/Bitmaps176x264.h" // 2.7"  b/w
+// #include "bitmaps/Bitmaps240x416.h" // 3.71"  b/w
+// #include "bitmaps/Bitmaps400x300.h" // 4.2"  b/w
+// #include "bitmaps/Bitmaps640x384.h" // 7.5"  b/w
+// #include "bitmaps/Bitmaps800x480.h" // 7.5"  b/w
 // 3-color
-#include "bitmaps/Bitmaps3c200x200.h" // 1.54" b/w/r
-#include "bitmaps/Bitmaps3c104x212.h" // 2.13" b/w/r
-#include "bitmaps/Bitmaps3c128x296.h" // 2.9"  b/w/r
-#include "bitmaps/Bitmaps3c176x264.h" // 2.7"  b/w/r
-#include "bitmaps/Bitmaps3c400x300.h" // 4.2"  b/w/r
+// #include "bitmaps/Bitmaps3c200x200.h" // 1.54" b/w/r
+// #include "bitmaps/Bitmaps3c104x212.h" // 2.13" b/w/r
+// #include "bitmaps/Bitmaps3c128x296.h" // 2.9"  b/w/r
+// #include "bitmaps/Bitmaps3c176x264.h" // 2.7"  b/w/r
+// #include "bitmaps/Bitmaps3c400x300.h" // 4.2"  b/w/r
 #if defined(ESP8266) || defined(ESP32)
 #include "bitmaps/Bitmaps3c800x480.h" // 7.5"  b/w/r
 #include "bitmaps/WS_Bitmaps800x600.h" // 6.0"  grey
+#endif
+#if defined(ESP32)
+#include "bitmaps/Bitmaps1304x984.h" // 12.48" b/w
 #endif
 
 #else
@@ -356,6 +382,10 @@ void setup()
   //showBox(16, 56, 48, 32, true);
   display.powerOff();
   deepSleepTest();
+#if defined(ESP32) && defined(_GxBitmaps1304x984_H_)
+  drawBitmaps1304x984();
+  display.powerOff();
+#endif
   Serial.println("setup done");
 }
 
@@ -855,6 +885,9 @@ void drawBitmaps()
 #ifdef _WS_Bitmaps800x600_H_
   drawBitmaps800x600();
 #endif
+#if defined(ESP32) && defined(_GxBitmaps1304x984_H_)
+  drawBitmaps1304x984();
+#endif
   // 3-color
 #ifdef _GxBitmaps3c104x212_H_
   drawBitmaps3c104x212();
@@ -911,7 +944,7 @@ void drawBitmaps200x200()
     logo200x200, first200x200, second200x200, third200x200, fourth200x200, fifth200x200, sixth200x200, senventh200x200, eighth200x200
   };
 #endif
-  if (display.epd2.panel == GxEPD2::GDEP015OC1)
+  if ((display.epd2.panel == GxEPD2::GDEP015OC1) || (display.epd2.panel == GxEPD2::GDEH0154D67))
   {
     bool m = display.mirror(true);
     for (uint16_t i = 0; i < sizeof(bitmaps) / sizeof(char*); i++)
@@ -1244,7 +1277,7 @@ void drawBitmaps800x480()
     }
     if (display.epd2.panel == GxEPD2::GDEW075T7)
     {
-       // avoid ghosting caused by OTP waveform
+      // avoid ghosting caused by OTP waveform
       display.clearScreen();
       display.refresh(false); // full update
     }
@@ -1269,6 +1302,16 @@ void drawBitmaps800x600()
     //    delay(2000);
   }
 #endif
+}
+#endif
+
+#if defined(ESP32) && defined(_GxBitmaps1304x984_H_)
+void drawBitmaps1304x984()
+{
+  if (display.epd2.panel == GxEPD2::GDEW1248T3)
+  {
+    display.drawImage(Bitmap1304x984, 0, 0, display.epd2.WIDTH, display.epd2.HEIGHT, false, false, true);
+  }
 }
 #endif
 
