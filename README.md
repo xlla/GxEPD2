@@ -15,8 +15,10 @@
 - 4k7/10k resistor divider may not work with flat cable extensions or Waveshare 4.2 board, use level converter then
 - do not forget to connect GND
 - the actual Waveshare display boards now have level converters and series regulator, safe for 5V
-- use 4k7 pull-down on SS for ESP8266 for boards with level converters
+- use 3k3 pull-down on SS for ESP8266 for boards with level converters
 - note that 7.5" e-paper displays don't work reliable if fed from 3.3V Arduino pin
+- note that Waveshare bords with "clever" reset circuit may need shortened reset pulse
+- use `init(115200, true, 2, false)` for Waveshare boards with "clever" reset circuit
 
 ### Paged Drawing, Picture Loop
  - This library uses paged drawing to limit RAM use and cope with missing single pixel update support
@@ -53,36 +55,124 @@
 ### Supported SPI e-paper panels from Good Display:
 - GDEP015OC1     1.54" b/w
 - GDEH0154D67    1.54" b/w, replacement for GDEP015OC1
+- GDEW0154T8     1.54" b/w 152x152
+- GDEW0154M09    1.54" b/w 200x200
+- GDEW0154M10    1.54" b/w 152x152 DES
 - GDEW0154Z04    1.54" b/w/r 200x200
+- GDEH0154Z90    1.54" b/w/r, replacement for GDEW0154Z04
 - GDE0213B1      2.13" b/w
 - GDEH0213B72    2.13" b/w, replacement for GDE0213B1
 - GDEH0213B73    2.13" b/w, new replacement for GDE0213B1, GDEH0213B72
 - GDEW0213I5F    2.13" b/w flexible
+- GDEW0213M21    2.13" b/w DES
 - GDEW0213Z16    2.13" b/w/r
 - GDEH029A1      2.9" b/w
 - GDEW029T5      2.9" b/w
+- GDEM029T94     2.9" b/w
+- GDEW029M06     2.9" b/w DES
 - GDEW029Z10     2.9" b/w/r
+- GDEM029C90     2.9" b/w/y
 - GDEW026T0      2.6" b/w
+- GDEW026M01     2.6" b/w DES
 - GDEW027C44     2.7" b/w/r
 - GDEW027W3      2.7" b/w
 - GDEW0371W7     3.7" b/w
 - GDEW042T2      4.2" b/w
+- GDEW042M01     4.2" b/w DES
 - GDEW042Z15     4.2" b/w/r
+- ACeP565        5.65" Waveshare 5.65" 7-color e-paper display 600x448
 - GDEW0583T7     5.83" b/w
+- GDEW0583T8     5.83" b/w 648x460
 - GDEW075T8      7.5" b/w
 - GDEW075T7      7.5" b/w 800x480
 - GDEW075Z09     7.5" b/w/r
 - GDEW075Z08     7.5" b/w/r 800x480
+- GDEH075Z90     7.5" b/w/r 880x528
 - GDEW1248T3    12.48 b/w 1304x984
 #### Supported SPI e-paper panels & boards from Waveshare: compare with Good Display, same panel
 #### other supported panels
 - ED060SCT        6" grey levels, on Waveshare e-Paper IT8951 Driver HAT
+- ED060KC1        6" grey levels, 1448x1072, on Waveshare e-Paper IT8951 Driver HAT
 
 ### I can and will only support e-paper panels I have!
 - promotion panels from suppliers are welcome, to add support to GxEPD2
 - donation panels from users are welcome, to add support to GxEPD2
 
-### Version 1.2.5
+### Version 1.3.1
+- added support for GDEM029C90 128x296 b/w/y e-paper panel
+- GDEM029C90 has a very long refresh time of about 27 seconds
+- GDEM029C90 has partial update (window addressing) of controller memory
+- GDEM029C90 supports only full refresh of screen
+#### Version 1.3.0
+- added support for GDEM029T94 128x296 b/w e-paper panel
+- added support for GDEW026M01 152x296 b/w new DES e-paper panel
+- the new GDEW026M01 DES b/w e-paper panel has higher contrast and wide temperature range
+- differential refresh (fast partial update) is supported for normal temperature range
+- disable differential refresh for extended temperatures by setting hasFastPartialUpdate = false;
+- the differential waveform table for GDEW026M01 is experimental and may need improvement
+- major update of display selection in the examples to make additions easier:
+- old style selection is now in separate include files GxEPD2_display_selection.h 
+- and GxEPD2_display_selection_added.h
+- added new style display selection in include file GxEPD2_display_selection_new_style.h
+- either selection style can be used. old style is intended for easy copying of constructor lines.
+#### Version 1.2.16
+- fix for GDEH0154D67, to work independent of OTP version (ping-pong issue)
+#### Version 1.2.15
+- added support for GDEW0213M21 2.13" 104x212 b/w new DES e-paper panel
+- added support for GDEW029M06 2.9" 128x296 b/w new DES e-paper panel
+- added support for GDEW042M01 4.2" 400x300 b/w new DES e-paper panel
+- these new DES b/w e-paper panels have higher contrast and wide temperature range
+- differential refresh (fast partial update) is supported for normal temperature range
+- disable differential refresh for extended temperatures by setting hasFastPartialUpdate = false;
+- the GDEW042M01 I have is a preliminary version, differential waveform may need update
+#### Version 1.2.14
+- added support for 6" 1448x1072 ED060KC1 on Waveshare e-Paper IT8951 Driver HAT
+- fixed GxEPD2_WiFi_Example.ino: new GitHub fingerprint for ESP8266, certificate for ESP32
+- fixed color discriminator for 7-color display in GxEPD2_7C.h
+- added multicolor support for 7-color display in GxEPD2_WiFi_Example, GxEPD2_Spiffs_Example,
+- and GxEPD2_SD_Example, GxEPD2_SerialFlash_Example
+- fixed paged write to 7-color display controller (transaction and CS handling issue)
+- some more fixes
+#### Version 1.2.13
+- added support for GDEH0154Z90 1.54" 200x200 b/w/r, replacement for GDEW0154Z04
+- GDEH0154Z90 has partial window addressing, but no partial window refresh
+- added some missing constructor examples, e.g. for IT8951 Driver HAT on Due
+- cleaned-up wiring information in the examples
+#### Version 1.2.12
+- fixed GxEPD2_MinimumExample.ino to draw black on white (white on white was invisible)
+- added example GxEPD2_HelloWorld.ino
+- updated wiring info and constructor parameters for the actual Waveshare e-Paper ESP8266 Driver Board
+- added some missing explicit initializers (nobody noticed as compilers usually initialize simple members)
+#### Version 1.2.11
+- added support for Waveshare 5.65" 7-color e-paper display 600x448
+- the unknown controller of this display doesn't support partial update, as far as known
+- 7-color graphics support is available with class GxEPD2_7C
+- 7-color graphics support requires paging even on ESP32
+- 7-color graphics support causes heavy paging on Arduino UNO, gets very slow
+- refresh is quite fast for a color e-paper display: 12 seconds
+#### Version 1.2.10
+- added support for GDEH075Z90 7.5" b/w/r 880x528
+- the controller of GDEH075Z90 supports partial update, but refesh is full screen
+- the controller of GDEH075Z90 doesn't support differential update (not possible on 3-color anyway)
+- note: the connector of  the GDEH075Z90 is mirrored; connects downward on DESPI-C02
+- added optional init parameter "reset_duration" in ms, same default 20ms as before
+- reset_duration = 2 may help with "clever" reset circuit of newer boards from Waveshare
+#### Version 1.2.9
+- added support for GDEW0154T8 1.54" b/w 152x152
+- added support for GDEW0154M09 1.54" b/w 200x200
+- added support for GDEW0154M10 1.54" b/w 152x152 DES
+- added support for GDEW0583T8 5.83" b/w 648x460
+- added option to use class GFX of library GFX_Root instead of Adafruit_GFX
+- differential update on GDEW0154M10 is experimental, there is no partial update demo yet
+#### Version 1.2.8
+- improved transfer speed for the bigger displays (3.71" and up)
+#### Version 1.2.7
+- fix paged drawing of initial screen on GDEH029A1
+- sometimes true is false, if applied the wrong way round
+#### Version 1.2.6
+- slightly improved differential refresh for GDEW1248T3
+- minor fixes
+#### Version 1.2.5
 - added support for GDEW1248T3 12.84" b/w panel on Waveshare 12.48 e-paper display frame
 - tested with Waveshare Epaper ESP32 Driver Board mounted on connection board
 - tested with Arduino UNO mounted on connection board, is extremely slow

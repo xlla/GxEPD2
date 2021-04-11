@@ -46,7 +46,7 @@ class GxEPD2_1248 : public GxEPD2_EPD
     GxEPD2_1248(int8_t cs_m1, int8_t cs_s1, int8_t cs_m2, int8_t cs_s2, int8_t dc, int8_t rst, int8_t busy);
     // methods (virtual)
     void init(uint32_t serial_diag_bitrate = 0); // serial_diag_bitrate = 0 : disabled
-    void init(uint32_t serial_diag_bitrate, bool initial, bool pulldown_rst_mode = false);
+    void init(uint32_t serial_diag_bitrate, bool initial, uint16_t reset_duration = 20, bool pulldown_rst_mode = false);
     //  Support for Bitmaps (Sprites) to Controller Buffer and to Screen
     void clearScreen(uint8_t value = 0xFF); // init controller memory and screen (default white)
     void writeScreenBuffer(uint8_t value = 0xFF); // init controller memory (default white)
@@ -96,6 +96,9 @@ class GxEPD2_1248 : public GxEPD2_EPD
     void _waitWhileAnyBusy(const char* comment = 0, uint16_t busy_time = 5000);
     void _getMasterTemperature();
   private:
+    friend class GDEW1248T3_OTP;
+    void _readController(uint8_t cmd, uint8_t* data, uint16_t n, int8_t cs = -1, int8_t dc = -1);
+  private:
     int8_t _sck, _miso, _mosi, _dc1, _dc2, _rst1, _rst2;
     int8_t _cs_m1, _cs_s1, _cs_m2, _cs_s2;
     int8_t _busy_m1, _busy_s1, _busy_m2, _busy_s2;
@@ -118,11 +121,14 @@ class GxEPD2_1248 : public GxEPD2_EPD
         void writeData(uint8_t d);
       private:
         void _setPartialRamArea(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
+        void _startTransfer();
+        void _transfer(uint8_t value);
+        void _endTransfer();
       public:
         const uint16_t WIDTH, HEIGHT;
       private:
-        int8_t _cs, _dc;
         bool _rev_scan;
+        int8_t _cs, _dc;
         const SPISettings _spi_settings;
     };
     ScreenPart M1, S1, M2, S2;
